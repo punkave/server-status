@@ -7,7 +7,9 @@
     "clf-parser": "git+https://github.com/boutell/node-clf-parser",
     "glob": "~3.2.6",
     "lodash": "~2.2.1",
-    "tail": "~0.3.1"
+    "express": "~3.4.2",
+    "always-tail": "~0.1.0",
+    "optimist": "~0.6.0"
   },
   "devDependencies": {},
   "scripts": {
