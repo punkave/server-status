@@ -21,10 +21,6 @@ var files = [];
 
 files = files.concat(glob.sync(dir + '/*log'));
 
-files = _.filter(files, function(file) {
-  return (file.indexOf('error') === -1);
-});
-
 var scoreboard = {};
 
 var sites = [];
@@ -34,6 +30,9 @@ _.each(files, function(file) {
 });
 
 function addFile(file) {
+  if (file.indexOf('error') !== -1) {
+    return;
+  }
   if (_.some(sites, function(site) {
     return site.file === file;
   })) {
