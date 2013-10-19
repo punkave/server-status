@@ -1,0 +1,26 @@
+{
+  "name": "status",
+  "version": "0.1.0",
+  "description": "Report interesting live stats about an nginx or apache server",
+  "main": "status.js",
+  "dependencies": {
+    "clf-parser": "git+https://github.com/boutell/node-clf-parser",
+    "glob": "~3.2.6",
+    "lodash": "~2.2.1",
+    "tail": "~0.3.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "clf",
+    "apache",
+    "nginx",
+    "status",
+    "reports",
+    "webserver"
+  ],
+  "author": "P'unk Avenue",
+  "license": "MIT"
+}
