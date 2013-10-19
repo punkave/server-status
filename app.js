@@ -98,8 +98,10 @@ app.get('/', function(req, res) {
   return res.send(scoreboard);
 });
 
-console.log('Listening on port 30000');
-app.listen(30000);
+var port = config.port || 30000;
+
+console.log('Listening on port ' + port);
+app.listen(port);
 
 function watch(site) {
   var size = fs.statSync(site.file).size;
