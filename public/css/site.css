@@ -51,6 +51,8 @@ body {
   width: 3em;
   padding: 2px;
   margin-bottom: 0;
+  /* Same as 5 and 6 so the line is even */
+  font-size: 100%;
 }
 
 /* CPU */
