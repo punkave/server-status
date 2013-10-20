@@ -35,6 +35,14 @@ body {
   padding: 2px;
 }
 
+.site p.delta
+{
+  font-size: 125%;
+  text-align: center;
+  margin: 0.2em;
+  padding: 2px;
+}
+
 /* Errors */
 .site h4
 {

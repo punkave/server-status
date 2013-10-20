@@ -16,6 +16,15 @@
       <p class="warning">?</p>
     {% else %}
       <p>{{ site.pages | e }}</p>
+      {% if site.previous %}
+        {% if site.previous.pages < site.pages %}
+          <p class="delta">▲{{ site.pages - site.previous.pages }}</p>
+        {% elif site.previous.pages > site.pages %}
+          <p class="delta">▼{{ site.previous.pages - site.pages }}</p>
+        {% else %}
+          <p class="delta"></p>
+        {% endif %}
+      {% endif %}
     {% endif %}
     <h5 {% if site.cpu >= 4.0 %}class="warning"{% endif %}>{{ site.cpu or '0.0' }}</h5>
     <h6 {% if site.disk >= 80 %}class="warning"{% endif %}>{{ site.disk }}%</h6>
