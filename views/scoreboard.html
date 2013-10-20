@@ -22,10 +22,10 @@
         {% elif site.previous.pages > site.pages %}
           <p class="delta">▼{{ site.previous.pages - site.pages }}</p>
         {% else %}
-          <p class="delta"></p>
+          <p class="delta">&nbsp;</p>
         {% endif %}
       {% else %}
-        <p class="delta"></p>
+        <p class="delta">&nbsp;</p>
       {% endif %}
     {% endif %}
     <h5 {% if site.cpu >= 4.0 %}class="warning"{% endif %}>{{ site.cpu or '0.0' }}</h5>
