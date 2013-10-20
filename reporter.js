@@ -8,9 +8,11 @@ var _ = require('lodash');
 var Tail = require('always-tail');
 var express = require('express');
 var exec = require('child_process').exec;
+var request = require('request');
 
 var interval = config.interval;
 var apikey = config.apikey;
+var reportTo = config.reportTo;
 
 var dir = '/var/log/nginx';
 if (!fs.existsSync(dir)) {
@@ -60,7 +62,7 @@ function removeFile(file) {
     return site.file === file;
   });
   if (site) {
-    site.shutdown = true;
+    site.shutdown();
     sites = _.filter(sites, function(site) {
       return site.file !== file;
     });
@@ -68,7 +70,7 @@ function removeFile(file) {
 }
 
 _.each(sites, function(site) {
-  watch(site);  
+  watch(site);
 });
 
 fs.watch(dir, function(event, filename) {
@@ -83,25 +85,36 @@ fs.watch(dir, function(event, filename) {
   }
 });
 
-setInterval(serverLevelStats, interval);
-       
-var app = express();
+setInterval(step, interval);
+step();
 
-app.get('/', function(req, res) {
-  if (req.query.apikey !== apikey) {
-    res.statusCode = 404;
-    return res.send('notfound');
-  }
+function step() {
+  return serverLevelStats(function() {
+    _.each(sites, function(site) {
+      site.flush();
+    });
+    report();
+  });
+}
+
+function report() {
   scoreboard.sites = _.map(sites, function(site) {
     return site.stats;
   });
-  return res.send(scoreboard);
-});
-
-var port = config.port || 30000;
-
-console.log('Listening on port ' + port);
-app.listen(port);
+  scoreboard.apikey = apikey;
+  request({
+    method: 'POST',
+    uri: reportTo,
+    json: scoreboard
+  }, function(err, response, body) {
+    console.log(body);
+    if (err) {
+      console.error(err);
+      // TODO: get the admin's attention in some other way if we cannot talk to the scoreboard server for
+      // a long time
+    }
+  });
+}
 
 function watch(site) {
   var size = fs.statSync(site.file).size;
@@ -109,7 +122,6 @@ function watch(site) {
   var now = getEpoch(new Date());
   var pages = 0;
   var errors = 0;
-  var timer = setInterval(flush, interval);
   tail.on('line', function(line) {
     try {
       info = parse(line);
@@ -123,24 +135,23 @@ function watch(site) {
       throw e;
       // Don't fuss if a bad line is encountered
     }
-  }); 
+  });
 
-  function flush() {
-    if (site.shutdown) {
-      tail.unwatch();
-      clearInterval(timer);
-      return;
-    } 
-    site.stats = { 
-      name: site.name, 
+  site.shutdown = function() {
+    tail.unwatch();
+  };
+
+  site.flush = function() {
+    site.stats = {
+      name: site.name,
       pages: pages,
       errors: errors,
-      interval: interval 
+      interval: interval
     };
     now++;
     errors = 0;
     pages = 0;
-  }
+  };
 }
 
 function getEpoch(date) {
@@ -163,12 +174,16 @@ function page(info) {
     return true;
   }
   // Smells like an asset
-  return false;  
+  return false;
 }
 
-function serverLevelStats() {
-  var cpu = fs.readFileSync('/proc/loadavg', 'utf8');
-  scoreboard.cpu = parseFloat(cpu.match(/^\d+\.\d+/)[0]);
+function serverLevelStats(callback) {
+  var cpu;
+  if (fs.existsSync('/proc/loadavg'))
+  {
+    cpu = fs.readFileSync('/proc/loadavg', 'utf8');
+    scoreboard.cpu = parseFloat(cpu.match(/^\d+\.\d+/)[0]);
+  }
   // /opt is usually on the same filesystem as your websites and
   // databases. If not, send us a pull request to handle this sensibly
   // through config.js
@@ -176,7 +191,8 @@ function serverLevelStats() {
     var matches = stdout.match(/([\d\.]+)\%/ );
     if (matches) {
       scoreboard.disk = parseFloat(matches[1]);
-    } 
+    }
+    return callback(null);
   });
 }
 

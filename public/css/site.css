@@ -1,0 +1,43 @@
+/* Styles for this particular app, building on reset and base */
+
+.site
+{
+  width: 200px;
+  border-radius: 6px;
+  border: 1px dashed #def;
+  box-sizing: border-box;
+  margin: 8px;
+  padding: 4px;
+  float: left;
+}
+
+.site h3
+{
+  width: 200px;
+  overflow: hidden;
+}
+
+.site p
+{
+  font-size: 400%;
+  text-align: center;
+  margin: 0.2em;
+}
+
+.site h5
+{
+  float: left;
+  padding: 2px;
+}
+
+.site h6
+{
+  float: right;
+  padding: 2px;
+  margin-bottom: 0;
+}
+
+.site .warning
+{
+  background-color: #f88;
+}

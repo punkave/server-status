@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="refresh" content="5" />
+  <link rel="stylesheet" type="text/css" href="/css/reset.css" />
+  <link rel="stylesheet" type="text/css" href="/css/base.css" />
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+  <title>Client Site Status</title>
+</head>
+<body>
+{% for site in sites %}
+  <div class="site">
+    <h3>{{ site.name | e }}</h3>
+    {% if site.errors %}
+      <h4 class="warning">{{ site.errors }}</h4>
+    {% endif %}
+    <p>{{ site.pages | e }}</p>
+    <h5 {% if site.cpu >= 4.0 %}class="warning"{% endif %}>{{ site.cpu }}</h5>
+    <h6 {% if site.disk >= 80 %}class="warning"{% endif %}>{{ site.disk }}%</h6>
+{% endfor %}
+</body>
+</html>
