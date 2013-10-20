@@ -14,6 +14,9 @@ var interval = config.interval;
 var apikey = config.apikey;
 var reportTo = config.reportTo;
 
+// If we see nginx monitor that, if not monitor Apache.
+// We always use nginx as a reverse proxy to node apps and
+// to mixed node/apache servers, so it should catch all if present
 var dir = '/var/log/nginx';
 if (!fs.existsSync(dir)) {
   dir = '/var/log/apache2';
@@ -107,7 +110,6 @@ function report() {
     uri: reportTo,
     json: scoreboard
   }, function(err, response, body) {
-    console.log(body);
     if (err) {
       console.error(err);
       // TODO: get the admin's attention in some other way if we cannot talk to the scoreboard server for

@@ -1,5 +1,6 @@
 /* Styles for this particular app, building on reset and base */
 
+/* Wrapper for one site */
 .site
 {
   width: 200px;
@@ -11,32 +12,48 @@
   float: left;
 }
 
+/* Site name */
 .site h3
 {
-  width: 200px;
+  width: 180px;
   overflow: hidden;
+  padding: 2px;
 }
 
+/* Pages in last n minutes */
 .site p
 {
   font-size: 400%;
   text-align: center;
   margin: 0.2em;
+  padding: 2px;
 }
 
+/* Errors */
+.site h4
+{
+  text-align: center;
+  margin: auto;
+  width: 3em;
+  padding: 2px;
+}
+
+/* CPU */
 .site h5
 {
   float: left;
   padding: 2px;
 }
 
+/* Disk % */
 .site h6
 {
   float: right;
-  padding: 2px;
   margin-bottom: 0;
+  padding: 2px;
 }
 
+/* Warning class added to CPU or disk when they are in a worrisome range */
 .site .warning
 {
   background-color: #f88;
