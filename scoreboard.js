@@ -50,15 +50,15 @@ app.get('/', function(req, res) {
       return -1;
     } else if (b.late && (!a.late)) {
       return 1;
+    } else if (a.errors < b.errors) {
+      return 1;
     } else if (a.errors > b.errors) {
       return -1;
-    } else if (b.errors > a.errors) {
-      return 1;
     } else if (a.pages < b.pages) {
       return 1;
     } else if (a.pages > b.pages) {
       return -1;
-    } else if (a.name > b.name) {
+    } else if (a.name < b.name) {
       return -1;
     } else if (b.name > a.name) {
       return 1;
