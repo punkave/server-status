@@ -24,6 +24,8 @@
         {% else %}
           <p class="delta"></p>
         {% endif %}
+      {% else %}
+        <p class="delta"></p>
       {% endif %}
     {% endif %}
     <h5 {% if site.cpu >= 4.0 %}class="warning"{% endif %}>{{ site.cpu or '0.0' }}</h5>
