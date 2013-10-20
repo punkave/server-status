@@ -18,6 +18,7 @@
     <p>{{ site.pages | e }}</p>
     <h5 {% if site.cpu >= 4.0 %}class="warning"{% endif %}>{{ site.cpu }}</h5>
     <h6 {% if site.disk >= 80 %}class="warning"{% endif %}>{{ site.disk }}%</h6>
+  </div>
 {% endfor %}
 </body>
 </html>
