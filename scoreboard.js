@@ -38,9 +38,9 @@ app.get('/', function(req, res) {
   }
   var sites = _.values(scoreboard);
   sites.sort(function(a, b) {
-    if (a.pages > b.pages) {
+    if (a.pages < b.pages) {
       return 1;
-    } else if (a.pages < b.pages) {
+    } else if (a.pages > b.pages) {
       return -1;
     } else {
       return 0;
