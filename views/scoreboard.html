@@ -2,7 +2,7 @@
 <html lang="en-US">
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="refresh" content="5" />
+  <meta http-equiv="refresh" content="30" />
   <link rel="stylesheet" type="text/css" href="/css/reset.css" />
   <link rel="stylesheet" type="text/css" href="/css/base.css" />
   <link rel="stylesheet" type="text/css" href="/css/site.css" />
@@ -12,7 +12,11 @@
 {% for site in sites %}
   <div class="site">
     <h3>{{ site.name | e }}</h3>
-    <p>{{ site.pages | e }}</p>
+    {% if site.late %}
+      <p class="warning">?</p>
+    {% else %}
+      <p>{{ site.pages | e }}</p>
+    {% endif %}
     <h5 {% if site.cpu >= 4.0 %}class="warning"{% endif %}>{{ site.cpu or '0.0' }}</h5>
     <h6 {% if site.disk >= 80 %}class="warning"{% endif %}>{{ site.disk }}%</h6>
     {% if site.errors %}

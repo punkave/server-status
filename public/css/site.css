@@ -1,11 +1,16 @@
 /* Styles for this particular app, building on reset and base */
 
+body {
+  background-color: black;
+  color: white;
+}
+
 /* Wrapper for one site */
 .site
 {
   width: 200px;
   border-radius: 6px;
-  border: 1px solid #148;
+  border: 1px solid white;
   box-sizing: border-box;
   margin: 8px;
   padding: 4px;
@@ -18,6 +23,7 @@
   width: 180px;
   overflow: hidden;
   padding: 2px;
+  margin-bottom: 0;
 }
 
 /* Pages in last n minutes */
@@ -36,6 +42,7 @@
   margin: auto;
   width: 3em;
   padding: 2px;
+  margin-bottom: 0;
 }
 
 /* CPU */
@@ -43,6 +50,7 @@
 {
   float: left;
   padding: 2px;
+  margin-bottom: 0;
 }
 
 /* Disk % */
@@ -51,6 +59,7 @@
   float: right;
   margin-bottom: 0;
   padding: 2px;
+  margin-bottom: 0;
 }
 
 /* Warning class added to CPU or disk when they are in a worrisome range */

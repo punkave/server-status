@@ -12,6 +12,7 @@ env.express(app);
 
 var port = config.port || 30000;
 var apikey = config.apikey;
+var interval = config.interval;
 var scoreboard = {};
 
 app.post('/report', function(req, res) {
@@ -20,6 +21,7 @@ app.post('/report', function(req, res) {
     return res.send('notfound');
   }
   _.each(req.body.sites, function(site) {
+    site.when = new Date();
     site.disk = req.body.disk;
     site.cpu = req.body.cpu;
     scoreboard[site.name] = site;
@@ -37,11 +39,29 @@ app.get('/', function(req, res) {
     return res.send('notfound');
   }
   var sites = _.values(scoreboard);
+  var now = new Date();
+  _.each(sites, function(site) {
+    // If we haven't heard from the site in 3 intervals, it's time to be concerned
+    site.late = ((now.getTime() - site.when.getTime()) / interval) > 3;
+  });
   sites.sort(function(a, b) {
-    if (a.pages < b.pages) {
+    // Sort by: lateness (monitoring offline), errors, pages, name
+    if (a.late && (!b.late)) {
+      return -1;
+    } else if (b.late && (!a.late)) {
+      return 1;
+    } else if (a.errors > b.errors) {
+      return -1;
+    } else if (b.errors > a.errors) {
+      return 1;
+    } else if (a.pages < b.pages) {
       return 1;
     } else if (a.pages > b.pages) {
       return -1;
+    } else if (a.name > b.name) {
+      return -1;
+    } else if (b.name > a.name) {
+      return 1;
     } else {
       return 0;
     }
