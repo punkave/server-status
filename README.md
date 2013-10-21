@@ -32,4 +32,11 @@ This is a work in progress.
 
 ## To Develop Locally
 
+Got an instance of the scoreboard running in production? Great, just slave your local dev copy to it as a data source. Set the `dataSource` option like this in `config.js` for your local copy:
+
+    dataSource: 'http://my-scoreboard-site.com:30000/data?apikey=my-api-key'
+
+If not, here's an alternative:
+
 Make some empty files in /var/log/nginx, like /var/log/nginx/test1.log, /var/log/nginx/test2.log, etc. Run reporter. In a separate terminal tab, run scoreboard. Now you have something to look at while tweaking the source code.
+

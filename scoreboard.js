@@ -1,6 +1,7 @@
 var config = require('./config.js');
 var express = require('express');
 var nunjucks = require('nunjucks');
+var request = require('request');
 var fs = require('fs');
 var _ = require('lodash');
 
@@ -15,18 +16,12 @@ var port = config.port || 30000;
 var apikey = config.apikey;
 var interval = config.interval;
 var scoreboard = {};
-
+// Slave this scoreboard to another rather than receiving reports
+var dataSource = config.dataSource;
 var snapshotFile = __dirname + '/snapshot.json';
 
 if (fs.existsSync(snapshotFile)) {
-  scoreboard = JSON.parse(fs.readFileSync(snapshotFile), function(k, v) {
-    // Reviver to deal with date strings and turn them back into dates. JSON
-    // makes me pine for PHP's serialize... OK just a little
-    if (k === 'when') {
-      return new Date(v);
-    }
-    return v;
-  });
+  parseScoreboard(fs.readFileSync(snapshotFile));
 }
 
 // API for submitting a report from a server
@@ -40,6 +35,7 @@ app.post('/report', function(req, res) {
     if (site.previous) {
       delete site.previous.previous;
     }
+    site.ip = req.ip;
     site.when = new Date();
     site.disk = req.body.disk;
     site.cpu = req.body.cpu;
@@ -68,11 +64,14 @@ app.get('/', function(req, res) {
     return res.send('notfound');
   }
   var sites = _.values(scoreboard);
-  var now = new Date();
-  _.each(sites, function(site) {
-    // If we haven't heard from the site in 3 intervals, it's time to be concerned
-    site.late = ((now.getTime() - site.when.getTime()) / interval) > 3;
-  });
+  // If we are slaved to a data source let the source decide if the site is late
+  if (!dataSource) {
+    var now = new Date();
+    _.each(sites, function(site) {
+      // If we haven't heard from the site in 3 intervals, it's time to be concerned
+      site.late = ((now.getTime() - site.when.getTime()) / interval) > 3;
+    });
+  }
   sites.sort(function(a, b) {
     // Sort by: lateness (monitoring offline), errors, pages, name
     if (a.late && (!b.late)) {
@@ -108,9 +107,41 @@ app.get('/logout', function(req, res) {
 // so we can easily restart
 setInterval(snapshot, 30000);
 
+if (dataSource) {
+  // We are slaved to another scoreboard, fetch data from it
+  setInterval(fetch, 30000);
+  fetch();
+}
+
 console.log('Listening on port ' + port);
 app.listen(port);
 
 function snapshot() {
   fs.writeFileSync(__dirname + '/snapshot.json', JSON.stringify(scoreboard));
+}
+
+function fetch() {
+  request({
+    method: 'GET',
+    uri: dataSource
+  }, function(err, response, body) {
+    if (err) {
+      console.error(err);
+      // TODO: get the admin's attention in some other way if we cannot talk to the scoreboard server for
+      // a long time
+    } else {
+      parseScoreboard(body);
+    }
+  });
+}
+
+function parseScoreboard(json) {
+  scoreboard = JSON.parse(json, function(k, v) {
+    // Reviver to deal with date strings and turn them back into dates. JSON
+    // makes me pine for PHP's serialize... OK just a little
+    if (k === 'when') {
+      return new Date(v);
+    }
+    return v;
+  });
 }

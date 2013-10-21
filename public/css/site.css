@@ -27,6 +27,16 @@ body {
   margin-bottom: 0;
 }
 
+.site h5
+{
+  width: 180px;
+  height: 1em;
+  overflow: hidden;
+  padding: 2px;
+  margin-bottom: 0;
+  text-align: center;
+}
+
 /* Pages in last n minutes */
 .site p
 {
@@ -44,20 +54,23 @@ body {
   padding: 2px;
 }
 
-/* Errors */
 .site h4
+{
+  font-size: 100%;
+}
+
+/* Errors */
+.site h4.warning
 {
   text-align: center;
   margin: auto;
   width: 3em;
   padding: 2px;
   margin-bottom: 0;
-  /* Same as 5 and 6 so the line is even */
-  font-size: 100%;
 }
 
 /* CPU */
-.site h5
+.site h4.cpu
 {
   float: left;
   padding: 2px;
@@ -65,10 +78,9 @@ body {
 }
 
 /* Disk % */
-.site h6
+.site h4.disk
 {
   float: right;
-  margin-bottom: 0;
   padding: 2px;
   margin-bottom: 0;
 }

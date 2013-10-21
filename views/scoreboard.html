@@ -12,6 +12,7 @@
 {% for site in sites %}
   <div class="site">
     <h3>{{ site.name | e }}</h3>
+    <h5>{{ site.ip | e }}</h5></h3>
     {% if site.late %}
       <p class="warning">?</p>
     {% else %}
@@ -28,8 +29,8 @@
         <p class="delta">&nbsp;</p>
       {% endif %}
     {% endif %}
-    <h5 {% if site.cpu >= 4.0 %}class="warning"{% endif %}>{{ site.cpu or '0.0' }}</h5>
-    <h6 {% if site.disk >= 80 %}class="warning"{% endif %}>{{ site.disk }}%</h6>
+    <h4 class="cpu" {% if site.cpu >= 4.0 %}class="warning"{% endif %}>{{ site.cpu or '0.0' }}</h5>
+    <h4 class="disk" {% if site.disk >= 80 %}class="warning"{% endif %}>{{ site.disk }}%</h6>
     {% if site.errors %}
       <h4 class="warning">{{ site.errors }}</h4>
     {% endif %}
