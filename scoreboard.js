@@ -97,6 +97,16 @@ app.get('/', function(req, res) {
   return res.render('scoreboard.html', { sites: sites });
 });
 
+app.get('/details', function(req, res) {
+  var name = req.query.name;
+  var site = scoreboard[name];
+  if (!site) {
+    res.statusCode = 404;
+    return res.send('notfound');
+  }
+  return res.render('details.html', site);
+});
+
 app.get('/logout', function(req, res) {
   res.clearCookie('apikey');
   res.statusCode = 200;

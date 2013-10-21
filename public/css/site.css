@@ -33,7 +33,10 @@ body {
   height: 1em;
   overflow: hidden;
   padding: 2px;
+  margin-top: 5px;
   margin-bottom: 0;
+  color: #888;
+  font-size: 80%;
   text-align: center;
 }
 
@@ -69,6 +72,12 @@ body {
   margin-bottom: 0;
 }
 
+.site-link
+{
+  color: white;
+  text-decoration: none;
+}
+
 /* CPU */
 .site h4.cpu
 {
@@ -89,4 +98,29 @@ body {
 .site .warning
 {
   background-color: #f88;
+}
+
+.details
+{
+  width: 600px;
+  background-color: white;
+  color: black;
+  padding: 20px;
+  margin: auto;
+  margin-top: 20px;
+}
+
+.details table
+{
+  font-size: 120%;
+}
+
+.details th
+{
+  padding-right: 20px;
+}
+
+.details th, .details td
+{
+  padding-bottom: 10px;
 }

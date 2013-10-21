@@ -35,3 +35,27 @@ strong {
 em {
   font-style: italic;
 }
+
+/* Tables without default spacing are unreadable unless you are
+  intentionally hacking them as a layout tool, which you shouldn't */
+td, th {
+  margin: 2px;
+  padding: 2px;
+}
+
+th {
+  /* Has anybody ever wanted the centered behavior? */
+  text-align: left;
+}
+
+pre {
+  font-family: Courier;
+}
+
+code {
+  font-family: Courier;
+}
+
+blockquote {
+  margin-left: 2em;
+}

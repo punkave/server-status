@@ -1,3 +1,4 @@
 node_modules
 config.js
 snapshot.json
+test.logs

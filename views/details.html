@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block title %}{{ name | e }}{% endblock %}
+{% block body %}
+<div class="details">
+<h1><a href="/">Server Status</a></h1>
+<h2>{{ name | e }}</h2>
+{% if late %}
+<h3><strong>This server has not reported in recently. All data are suspect. Please check the server.</strong></h3>
+{% endif %}
+<table>
+  <tr>
+    <th>IP address</th><td>{{ ip }}</td>
+  </tr>
+  <tr>
+    <th>Page Views</th><td>{{ pages }}</td>
+  </tr>
+  <tr>
+    <th>CPU Load</th><td>{{ cpu }}%</td>
+  </tr>
+  <tr>
+    <th>Disk Used</th><td>{{ disk }}</td>
+  </tr>
+  <tr>
+    <th>Errors</th><td>{{ errors }}</td>
+  </tr>
+</table>
+{% if errorDetails.length > 0 %}
+  <h3>Sample Errors</h3>
+  <table>
+    <tr>
+      <th>Method</th>
+      <th>Path</th>
+      <th>Status</th>
+    </tr>
+    {% for error in errorDetails %}
+      <tr>
+        <td>{{ error.method | e }}</td>
+        <td class="error-path">{{ error.path | e }}</td>
+        <td class="error-status">{{ error.status | e }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endif %}
+</div>
+{% endblock %}

@@ -1,20 +1,15 @@
-<!DOCTYPE html>
-<html lang="en-US">
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="refresh" content="30" />
-  <link rel="stylesheet" type="text/css" href="/css/reset.css" />
-  <link rel="stylesheet" type="text/css" href="/css/base.css" />
-  <link rel="stylesheet" type="text/css" href="/css/site.css" />
-  <title>Client Site Status</title>
-</head>
-<body>
+{% extends "layout.html" %}
+{% block title %}Client Site Status{% endblock %}
+{% block body %}
 {% for site in sites %}
+<a href="/details?name={{ site.name | e }}" class="site-link">
   <div class="site">
     <h3>{{ site.name | e }}</h3>
     <h5>{{ site.ip | e }}</h5></h3>
     {% if site.late %}
       <p class="warning">?</p>
+      {# For consistent height #}
+      <p class="delta">&nbsp;</p>
     {% else %}
       <p>{{ site.pages | e }}</p>
       {% if site.previous %}
@@ -35,6 +30,6 @@
       <h4 class="warning">{{ site.errors }}</h4>
     {% endif %}
   </div>
+</a>
 {% endfor %}
-</body>
-</html>
+{% endblock %}
