@@ -21,6 +21,7 @@ body {
 .site h3
 {
   width: 180px;
+  height: 1em;
   overflow: hidden;
   padding: 2px;
   margin-bottom: 0;
