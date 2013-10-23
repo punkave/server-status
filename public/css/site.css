@@ -124,3 +124,19 @@ body {
 {
   padding-bottom: 10px;
 }
+
+.error-path
+{
+  width: 350px;
+}
+
+h2.filters
+{
+  margin: 10px;
+}
+
+h2.filters a
+{
+  color: white;
+  text-decoration :underline;
+}

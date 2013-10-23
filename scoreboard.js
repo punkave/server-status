@@ -44,6 +44,15 @@ app.post('/report', function(req, res) {
   return res.send('ok');
 });
 
+app.get('/trash', function(req, res) {
+  var name = req.query.name;
+  var site = scoreboard[name];
+  if (site) {
+    site.trash = !site.trash;
+  }
+  return res.redirect('/');
+});
+
 // API for data access
 app.get('/data', function(req, res) {
   if (req.query.apikey !== apikey) {
@@ -64,6 +73,10 @@ app.get('/', function(req, res) {
     return res.send('notfound');
   }
   var sites = _.values(scoreboard);
+  sites = _.filter(sites, function(site) {
+    // Yes, ==
+    return site.trash == req.query.trash;
+  });
   // If we are slaved to a data source let the source decide if the site is late
   if (!dataSource) {
     var now = new Date();
@@ -94,7 +107,7 @@ app.get('/', function(req, res) {
       return 0;
     }
   });
-  return res.render('scoreboard.html', { sites: sites });
+  return res.render('scoreboard.html', { sites: sites, trash: req.query.trash });
 });
 
 app.get('/details', function(req, res) {

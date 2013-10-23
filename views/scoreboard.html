@@ -1,6 +1,15 @@
 {% extends "layout.html" %}
 {% block title %}Client Site Status{% endblock %}
 {% block body %}
+
+<h2 class="filters">
+  {% if trash %}
+    <a href="/">Live</a> | Trash
+  {% else %}
+    Live | <a href="/?trash=1">Trash</a>
+  {% endif %}
+</h2>
+
 {% for site in sites %}
 <a href="/details?name={{ site.name | e }}" class="site-link">
   <div class="site">
