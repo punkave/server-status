@@ -3,10 +3,15 @@
 {% block body %}
 
 <h2 class="filters">
-  {% if trash %}
-    <a href="/">Live</a> | Trash
+  {% if ip %}
+    <a href="/">All Servers</a>
+    Server {{ ip }}
   {% else %}
-    Live | <a href="/?trash=1">Trash</a>
+    {% if trash %}
+      <a href="/">Live</a> | Trash
+    {% else %}
+      Live | <a href="/?trash=1">Trash</a>
+    {% endif %}
   {% endif %}
 </h2>
 

@@ -77,6 +77,11 @@ app.get('/', function(req, res) {
     // Yes, ==
     return site.trash == req.query.trash;
   });
+  if (req.query.ip) {
+    sites = _.filter(sites, function(site) {
+      return site.ip === req.query.ip;
+    });
+  }
   // If we are slaved to a data source let the source decide if the site is late
   if (!dataSource) {
     var now = new Date();
@@ -107,7 +112,7 @@ app.get('/', function(req, res) {
       return 0;
     }
   });
-  return res.render('scoreboard.html', { sites: sites, trash: req.query.trash });
+  return res.render('scoreboard.html', { sites: sites, trash: req.query.trash, ip: req.query.ip });
 });
 
 app.get('/details', function(req, res) {
