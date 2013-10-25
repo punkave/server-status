@@ -2,6 +2,7 @@ var config = require('./config.js');
 var express = require('express');
 var nunjucks = require('nunjucks');
 var request = require('request');
+var extend = require('extend');
 var fs = require('fs');
 var _ = require('lodash');
 
@@ -20,6 +21,11 @@ var scoreboard = {};
 var dataSource = config.dataSource;
 var snapshotFile = __dirname + '/snapshot.json';
 
+// Fields that live on the scoreboard server and should not be overwritten
+// by reports
+
+var preserve = [ 'trash' ];
+
 if (fs.existsSync(snapshotFile)) {
   parseScoreboard(fs.readFileSync(snapshotFile));
 }
@@ -31,6 +37,10 @@ app.post('/report', function(req, res) {
     return res.send('notfound');
   }
   _.each(req.body.sites, function(site) {
+    var preserved;
+    if (scoreboard[site.name]) {
+      preserved = _.pick(scoreboard[site.name], preserve);
+    }
     site.previous = scoreboard[site.name];
     if (site.previous) {
       delete site.previous.previous;
@@ -39,6 +49,9 @@ app.post('/report', function(req, res) {
     site.when = new Date();
     site.disk = req.body.disk;
     site.cpu = req.body.cpu;
+    if (preserved) {
+      extend(true, site, preserved);
+    }
     scoreboard[site.name] = site;
   });
   return res.send('ok');

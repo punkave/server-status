@@ -106,7 +106,6 @@ function step() {
 }
 
 function report() {
-  console.log('reporting');
   scoreboard.sites = _.map(sites, function(site) {
     return site.stats;
   });
