@@ -10,5 +10,24 @@
 </head>
 <body>
   {% block body %}{% endblock %}
-</body
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    $('[data-history]').each(function() {
+      var $history = $(this);
+      var points = JSON.parse($history.attr('data-history'));
+      var max = 0;
+      $.each(points, function(i, point) {
+        if (point > max) {
+          max = point;
+        }
+      });
+      var height = $(this).height();
+      $.each(points, function(i, point) {
+        var $div = $('<div></div>');
+        $div.css('height', (point * height / max) + 'px');
+        $history.append($div);
+      });
+    });
+  </script>
+</body>
 </html>

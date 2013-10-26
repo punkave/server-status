@@ -11,15 +11,24 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.bodyParser());
 app.use(express.cookieParser());
 var env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views'));
+env.addFilter('json', function(data) {
+  return JSON.stringify(data);
+});
 env.express(app);
 
 var port = config.port || 30000;
 var apikey = config.apikey;
-var interval = config.interval;
-var scoreboard = {};
+// Default to 5min
+var interval = config.interval || (5 * 60000);
+// Keeping 144 epochs = 12 hours at 5min per epoch
+var keep = config.keep || 144;
 // Slave this scoreboard to another rather than receiving reports
 var dataSource = config.dataSource;
+
 var snapshotFile = __dirname + '/snapshot.json';
+
+var timeline = [];
+var scoreboard = {};
 
 // Fields that live on the scoreboard server and should not be overwritten
 // by reports
@@ -27,7 +36,7 @@ var snapshotFile = __dirname + '/snapshot.json';
 var preserve = [ 'trash' ];
 
 if (fs.existsSync(snapshotFile)) {
-  parseScoreboard(fs.readFileSync(snapshotFile));
+  parseTimeline(fs.readFileSync(snapshotFile));
 }
 
 // API for submitting a report from a server
@@ -72,7 +81,7 @@ app.get('/data', function(req, res) {
     res.statusCode = 404;
     return res.send('notfound');
   }
-  return res.send(JSON.stringify(scoreboard));
+  return res.send(JSON.stringify(timeline));
 });
 
 // UI for end users & dedicated scoreboard monitors
@@ -125,6 +134,17 @@ app.get('/', function(req, res) {
       return 0;
     }
   });
+  _.each(sites, function(site) {
+    site.history = [];
+    _.each(timeline, function(scoreboard) {
+      if (scoreboard[site.name]) {
+        site.history.push(scoreboard[site.name].pages);
+      } else {
+        site.history.push(0);
+      }
+    });
+    site.history.push(site.pages);
+  });
   return res.render('scoreboard.html', { sites: sites, trash: req.query.trash, ip: req.query.ip });
 });
 
@@ -144,9 +164,9 @@ app.get('/logout', function(req, res) {
   return res.send('logged out');
 });
 
-// Save a JSON snapshot of what we know every 30 seconds
-// so we can easily restart
-setInterval(snapshot, 30000);
+// Save a JSON snapshot of what we know once per interval
+// so we can easily restart. Also rotates the timeline
+setInterval(snapshot, interval);
 
 if (dataSource) {
   // We are slaved to another scoreboard, fetch data from it
@@ -158,7 +178,15 @@ console.log('Listening on port ' + port);
 app.listen(port);
 
 function snapshot() {
-  fs.writeFileSync(__dirname + '/snapshot.json', JSON.stringify(scoreboard));
+  var oldScoreboard = {};
+  extend(true, oldScoreboard, scoreboard);
+  delete oldScoreboard.history;
+  delete oldScoreboard.previous;
+  timeline.push(oldScoreboard);
+  if (timeline.length > keep) {
+    timeline.shift();
+  }
+  fs.writeFileSync(__dirname + '/snapshot.json', JSON.stringify(timeline));
 }
 
 function fetch() {
@@ -171,13 +199,13 @@ function fetch() {
       // TODO: get the admin's attention in some other way if we cannot talk to the scoreboard server for
       // a long time
     } else {
-      parseScoreboard(body);
+      parseTimeline(body);
     }
   });
 }
 
-function parseScoreboard(json) {
-  scoreboard = JSON.parse(json, function(k, v) {
+function parseTimeline(json) {
+  timeline = JSON.parse(json, function(k, v) {
     // Reviver to deal with date strings and turn them back into dates. JSON
     // makes me pine for PHP's serialize... OK just a little
     if (k === 'when') {
@@ -185,4 +213,13 @@ function parseScoreboard(json) {
     }
     return v;
   });
+  if (!Array.isArray(timeline)) {
+    // It's an old-style snapshot with just one scoreboard in it
+    timeline = [ timeline ];
+  }
+  if (timeline.length) {
+    scoreboard = _.last(timeline);
+  } else {
+    scoreboard = {};
+  }
 }

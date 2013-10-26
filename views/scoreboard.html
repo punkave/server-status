@@ -38,6 +38,7 @@
         <p class="delta">&nbsp;</p>
       {% endif %}
     {% endif %}
+    <div class="history" data-history="{{ site.history | json | e }}"></div>
     <h4 class="cpu" {% if site.cpu >= 4.0 %}class="warning"{% endif %}>{{ site.cpu or '0.0' }}</h5>
     <h4 class="disk" {% if site.disk >= 80 %}class="warning"{% endif %}>{{ site.disk }}%</h6>
     {% if site.errors %}
