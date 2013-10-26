@@ -138,9 +138,9 @@ app.get('/', function(req, res) {
     site.history = [];
     _.each(timeline, function(scoreboard) {
       if (scoreboard[site.name]) {
-        site.history.push(scoreboard[site.name].pages);
+        site.history.push(_.pick(scoreboard[site.name], [ 'pages', 'errors', 'late' ]));
       } else {
-        site.history.push(0);
+        site.history.push({});
       }
     });
     site.history.push(site.pages);
@@ -178,13 +178,15 @@ console.log('Listening on port ' + port);
 app.listen(port);
 
 function snapshot() {
-  var oldScoreboard = {};
-  extend(true, oldScoreboard, scoreboard);
-  delete oldScoreboard.history;
-  delete oldScoreboard.previous;
-  timeline.push(oldScoreboard);
-  if (timeline.length > keep) {
-    timeline.shift();
+  if (!dataSource) {
+    var oldScoreboard = {};
+    extend(true, oldScoreboard, scoreboard);
+    delete oldScoreboard.history;
+    delete oldScoreboard.previous;
+    timeline.push(oldScoreboard);
+    if (timeline.length > keep) {
+      timeline.shift();
+    }
   }
   fs.writeFileSync(__dirname + '/snapshot.json', JSON.stringify(timeline));
 }

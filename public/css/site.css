@@ -100,6 +100,23 @@ body {
   background-color: #f88;
 }
 
+.site .history {
+  margin: auto;
+  margin-bottom: 20px;
+  padding: 2px;
+  border: 1px solid #888;
+  width: 144px;
+  height: 20px;
+  display: block;
+}
+
+.site .history div {
+  display: inline-block;
+  vertical-align: bottom;
+  width: 1px;
+  background-color: white;
+}
+
 .details
 {
   width: 600px;
@@ -141,18 +158,3 @@ h2.filters a
   text-decoration :underline;
 }
 
-.site .history {
-  margin: auto;
-  margin-bottom: 20px;
-  padding: 2px;
-  border: 1px solid #888;
-  width: 144px;
-  height: 20px;
-}
-
-.site .history div {
-  display: inline-block;
-  vertical-align: bottom;
-  width: 1px;
-  background-color: white;
-}

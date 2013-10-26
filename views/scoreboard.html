@@ -17,9 +17,8 @@
 
 {% for site in sites %}
 <a href="/details?name={{ site.name | e }}" class="site-link">
-  <div class="site">
+  <div class="site" data-site>
     <h3>{{ site.name | e }}</h3>
-    <h5>{{ site.ip | e }}</h5></h3>
     {% if site.late %}
       <p class="warning">?</p>
       {# For consistent height #}
@@ -38,7 +37,8 @@
         <p class="delta">&nbsp;</p>
       {% endif %}
     {% endif %}
-    <div class="history" data-history="{{ site.history | json | e }}"></div>
+    <h5 data-max></h5>
+    <canvas width="144" height="20" class="history" data-history="{{ site.history | json | e }}"></canvas>
     <h4 class="cpu" {% if site.cpu >= 4.0 %}class="warning"{% endif %}>{{ site.cpu or '0.0' }}</h5>
     <h4 class="disk" {% if site.disk >= 80 %}class="warning"{% endif %}>{{ site.disk }}%</h6>
     {% if site.errors %}
