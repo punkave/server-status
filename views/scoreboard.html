@@ -24,7 +24,7 @@
       {# For consistent height #}
       <p class="delta">&nbsp;</p>
     {% else %}
-      <p>{{ site.pages | e }}</p>
+      <p>{% if not site.pages %}&nbsp;{% else %}{{ site.pages | e }}{% endif %}</p>
       {% if site.previous %}
         {% if site.previous.pages < site.pages %}
           <p class="delta">▲{{ site.pages - site.previous.pages }}</p>

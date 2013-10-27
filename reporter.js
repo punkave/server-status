@@ -38,7 +38,8 @@ _.each(files, function(file) {
 });
 
 function addFile(file) {
-  if (file.indexOf('error') !== -1) {
+  var name = nameForFile(file);
+  if (name === false) {
     return;
   }
   if (_.some(sites, function(site) {
@@ -47,20 +48,34 @@ function addFile(file) {
     // Already watching
     return;
   }
+  sites.push({
+    name: name,
+    file: file,
+    stats: {
+      name: name,
+      interval: interval
+    }
+  });
+}
+
+// If this file is of interest return a more presentable name for it.
+// If not, return false.
+
+function nameForFile(file) {
+  if (file.indexOf('error') !== -1) {
+    return false;
+  }
+  if (!file.match(/log$/)) {
+    return false;
+  }
   var name = path.basename(file);
   name = name.replace(/[\._\-]log/, '');
   name = name.replace(/[\._\-]access/, '');
   if (name === 'access') {
-    return;
+    // No way to distinguish it from other sites, name your log files better
+    return false;
   }
-  sites.push({ 
-    name: name, 
-    file: file, 
-    stats: {
-      name: name, 
-      interval: interval
-    }
-  });
+  return name;
 }
 
 function removeFile(file) {
@@ -85,12 +100,8 @@ fs.watch(dir, function(event, filename) {
   // 'rename' and 'change' are pretty incomplete as events
   // go, folks. Let's just figure it out
 
-  // If a file has just been compressed and rotated out in favor
-  // of a new log file, the filename will change so the extension
-  // is no longer .log. If this happens drop the file. A new file
-  // with the right name will appear and take over
-
-  if (!filename.match(/log$/)) {
+  var name = nameForFile(filename);
+  if (name === false) {
     removeFile(filename);
   } else if (fs.existsSync(filename)) {
     addFile(filename);
