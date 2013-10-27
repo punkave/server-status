@@ -84,7 +84,15 @@ fs.watch(dir, function(event, filename) {
   // Added? Removed? Merely appended to?
   // 'rename' and 'change' are pretty incomplete as events
   // go, folks. Let's just figure it out
-  if (fs.existsSync(filename)) {
+
+  // If a file has just been compressed and rotated out in favor
+  // of a new log file, the filename will change so the extension
+  // is no longer .log. If this happens drop the file. A new file
+  // with the right name will appear and take over
+
+  if (!filename.match(/log$/)) {
+    removeFile(filename);
+  } else if (fs.existsSync(filename)) {
     addFile(filename);
   } else {
     removeFile(filename);
@@ -146,7 +154,6 @@ function watch(site) {
       throw e;
       // Don't fuss if a bad line is encountered
     }
-    console.log(errorDetails);
   });
 
   site.shutdown = function() {
