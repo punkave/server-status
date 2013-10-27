@@ -138,13 +138,16 @@ app.get('/', function(req, res) {
     site.history = [];
     _.each(timeline, function(scoreboard) {
       if (scoreboard[site.name]) {
-        site.history.push(_.pick(scoreboard[site.name], [ 'pages', 'errors', 'late' ]));
+        site.history.push(pickHistory(scoreboard[site.name]));
       } else {
         site.history.push({});
       }
     });
-    site.history.push(site.pages);
+    site.history.push(pickHistory(site));
   });
+  function pickHistory(site) {
+    return _.pick(site, [ 'pages', 'errors', 'late' ]);
+  }
   return res.render('scoreboard.html', { sites: sites, trash: req.query.trash, ip: req.query.ip });
 });
 
