@@ -4,12 +4,60 @@
 <script type="text/javascript">
 $(function() {
   function refresh() {
-    $.get('/scoreboard', function(data) {
-      $('.scoreboard').html(data);
+    $('.scoreboard').load('/scoreboard', function() {
+      populate();
     });
   }
   setInterval(refresh, 30000);
   refresh();
+
+  function populate() {
+    $('[data-history]').each(function() {
+      var $history = $(this);
+      var canvas = $history[0];
+      var c = canvas.getContext('2d');
+      var points = JSON.parse($history.attr('data-history'));
+      var max = 0;
+      $.each(points, function(i, point) {
+        if (point.pages > max) {
+          max = point.pages;
+        }
+      });
+      var height = $(this).height();
+      $.each(points, function(i, point) {
+        // First draw the pageviews
+        line('#fff', point.pages);
+        // Then overlay the errors. If there are any,
+        // then show that as a minimum of 10% so we
+        // always notice, and range from there
+        // up to the share of errors as a proportion of
+        // pageviews. There can actually be more errors
+        // than pageviews, but canvas will crop for us
+        var e = point.errors;
+        if (e) {
+          if (e < (max / 5)) {
+            e = max / 5;
+          }
+        }
+        line('#f00', e);
+        // If we were late, that counts as errors up to the max
+        if (point.late) {
+          line('#f00', max);
+        }
+        function line(style, value) {
+          var v = value * height / max;
+          c.beginPath();
+          c.strokeStyle = style;
+          c.lineWidth = 1.0;
+          c.moveTo(i + 0.5, height - v);
+          c.lineTo(i + 0.5, height);
+          c.closePath();
+          c.stroke();
+        }
+      });
+      $history.closest('[data-site]').find('[data-max]').text(max);
+    });
+  }
 });
 </script>
 {% endblock %}
