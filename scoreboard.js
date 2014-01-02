@@ -84,8 +84,21 @@ app.get('/data', function(req, res) {
   return res.send(JSON.stringify(timeline));
 });
 
-// UI for end users & dedicated scoreboard monitors
+// Homepage, which sets up AJAX refreshes of the actual scoreboard
 app.get('/', function(req, res) {
+  if (req.query.apikey === apikey) {
+    res.cookie('apikey', req.query.apikey);
+    return res.redirect('/');
+  }
+  if (req.cookies.apikey !== apikey) {
+    res.statusCode = 404;
+    return res.send('notfound');
+  }
+  return res.render('index.html', {});
+});
+
+// AJAX update of the display for end users & dedicated scoreboard monitors
+app.get('/scoreboard', function(req, res) {
   if (req.query.apikey === apikey) {
     res.cookie('apikey', req.query.apikey);
     return res.redirect('/');

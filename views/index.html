@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="scoreboard"></div>
+<script type="text/javascript">
+$(function() {
+  function refresh() {
+    $.get('/scoreboard', function(data) {
+      $('.scoreboard').html(data);
+    });
+  }
+  setInterval(refresh, 30000);
+  refresh();
+});
+</script>
+{% endblock %}

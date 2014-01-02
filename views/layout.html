@@ -2,15 +2,15 @@
 <html lang="en-US">
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="refresh" content="30" />
+  {% block meta %}{% endblock %}
   <link rel="stylesheet" type="text/css" href="/css/reset.css" />
   <link rel="stylesheet" type="text/css" href="/css/base.css" />
   <link rel="stylesheet" type="text/css" href="/css/site.css" />
   <title>{% block title %}Client Site Status{% endblock %}</title>
 </head>
 <body>
-  {% block body %}{% endblock %}
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  {% block body %}{% endblock %}
   <script type="text/javascript">
     $('[data-history]').each(function() {
       var $history = $(this);
