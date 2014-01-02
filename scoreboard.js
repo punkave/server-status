@@ -118,13 +118,14 @@ app.get('/', function(req, res) {
       return -1;
     } else if (b.late && (!a.late)) {
       return 1;
-    } else if (a.errors < b.errors) {
+      // Always coerce undefined to 0 so comparisons behave sensibly
+    } else if ((a.errors || 0) < (b.errors || 0)) {
       return 1;
-    } else if (a.errors > b.errors) {
+    } else if ((a.errors || 0) > (b.errors || 0)) {
       return -1;
-    } else if (a.pages < b.pages) {
+    } else if ((a.pages || 0) < (b.pages || 0)) {
       return 1;
-    } else if (a.pages > b.pages) {
+    } else if ((a.pages || 0) > (b.pages || 0)) {
       return -1;
     } else if (a.name < b.name) {
       return -1;
